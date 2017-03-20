@@ -1,0 +1,54 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          hotspotctl
+# Required-Start:    
+# Required-Stop:     
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Wifi Hotspot Controller
+# Description:       An handmake script to start a wifi hotspot.
+### END INIT INFO
+
+# Author: Donny <donny.hikari@gmail.com>
+
+do_start()
+{
+	echo Starting Hotspot... >&1
+	# Create hotspot
+	sudo nmcli con up Hotspot ifname wlp4s0 >&1
+}
+
+do_stop()
+{
+	echo Disconnecting WiFi connection... >&1
+	sudo nmcli dev disconnect wlp4s0 >&1
+}
+
+do_status()
+{
+	sudo nmcli dev wifi list ifname wlp4s0 >&1
+}
+
+case $1 in
+	start)
+	do_start
+	exit 0
+	;;
+	stop)
+	do_stop
+	;;
+	restart|reload|force-reload)
+	do_stop
+	do_start
+	;;
+	status|state)
+	do_status
+	;;
+	*|"")
+	echo "Usage: $0 [start|stop|status|restart]" >&2
+	exit 3
+	;;
+esac
+
+:
